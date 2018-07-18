@@ -1,6 +1,7 @@
 ﻿using ManageProducts.Helper;
 using ManageProducts.Models;
 using ManageProducts.Utility;
+using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +18,13 @@ namespace ManageProducts.Controllers
     public class ProductsController : ApiController
     {
         /// <summary>
-        /// The method returns list of all products which meets the search criteria if its met.
-        /// 
+        /// Returns list of all products which meets the search criteria if its met.
         /// Returns an exception with proper message if products are not found.
         /// Returns exception for any other generic exceptions
         /// </summary>
         /// <param name="filterOptions"></param>
         /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, "Returns the list of products", typeof (IEnumerable<Product>))]
         public IHttpActionResult Get([FromUri] FilterOptions filterOptions)
         {
             try
@@ -70,6 +71,7 @@ namespace ManageProducts.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [SwaggerResponse(HttpStatusCode.OK, "Returns the list of products", typeof(Product))]
         public IHttpActionResult Get(string id)
         {
             try
@@ -89,12 +91,13 @@ namespace ManageProducts.Controllers
             {
                 throw ex;
             }
-        }       
+        }
 
         /// <summary>
         /// Adds new product to the list of products
         /// </summary>
         /// <param name="product"></param>
+        [SwaggerResponse(HttpStatusCode.OK, "Returns the list of products", typeof(Product))]
         public IHttpActionResult Post([FromBody]Product product)
         {
             try
