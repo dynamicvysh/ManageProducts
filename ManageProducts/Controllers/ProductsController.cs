@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Web.Http;
 
 namespace ManageProducts.Controllers
@@ -23,7 +24,7 @@ namespace ManageProducts.Controllers
         /// </summary>
         /// <param name="filterOptions"></param>
         /// <returns></returns>
-        public List<Product> Get([FromUri] FilterOptions filterOptions)
+        public IHttpActionResult Get([FromUri] FilterOptions filterOptions)
         {
             try
             {
@@ -45,13 +46,15 @@ namespace ManageProducts.Controllers
                     }
                     if (filteredProductList.Count > 0)
                     {
-                        return filteredProductList;
+                        return Ok(filteredProductList);
                     }
-                    throw new Exception(Message.NoProductFound);
+                    HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.NotFound, Message.ProductNotFound);
+                    throw new HttpResponseException(response);
                 }
                 else
                 {
-                    throw new Exception(Message.NoProductFound);
+                    HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.NotFound, Message.ProductNotFound);
+                    throw new HttpResponseException(response);
                 }
             }
             catch (Exception ex)
@@ -67,18 +70,19 @@ namespace ManageProducts.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Product Get(string id)
+        public IHttpActionResult Get(string id)
         {
             try
             {
                 Product product = CSVLoader.productList.Where(pdt => pdt.Id == id).FirstOrDefault();
                 if (product != null)
                 {
-                    return product;
+                    return Ok(product);
                 }
                 else
                 {
-                    throw new Exception(Message.ProductNotFound);
+                    HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.NotFound, Message.ProductNotFound);
+                    throw new HttpResponseException(response);
                 }
             }
             catch (Exception ex)
@@ -91,17 +95,19 @@ namespace ManageProducts.Controllers
         /// Adds new product to the list of products
         /// </summary>
         /// <param name="product"></param>
-        public void Post([FromBody]Product product)
+        public IHttpActionResult Post([FromBody]Product product)
         {
             try
             {
                 if (CSVLoader.productList.Where(pdt => pdt.Id == product.Id).Any())
                 {
-                    throw new Exception(Message.ProductExists);
+                    HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Conflict,Message.ProductExists);
+                    throw new HttpResponseException(response);
                 }
                 else
                 {
                     CSVLoader.productList.Add(product);
+                    return Created<Product>("Product", product);
                 }
             }
             catch (Exception ex)
@@ -116,7 +122,7 @@ namespace ManageProducts.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <param name="value"></param>
-        public void Put(string id, [FromBody]Product value)
+        public IHttpActionResult Put(string id, [FromBody]Product value)
         {
             try
             {
@@ -126,10 +132,12 @@ namespace ManageProducts.Controllers
                     product.Description = value.Description;
                     product.Model = value.Model;
                     product.Brand = value.Brand;
+                    return Ok();
                 }
                 else
                 {
-                    throw new Exception(Message.ProductNotFound);
+                    HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.NotFound, Message.ProductNotFound);
+                    throw new HttpResponseException(response);
                 }
             }
             catch (Exception ex)
@@ -143,13 +151,18 @@ namespace ManageProducts.Controllers
         /// Deletes a product based on id
         /// </summary>
         /// <param name="id"></param>
-        public void Delete(string id)
+        public IHttpActionResult Delete(string id)
         {
             try
             {
                 if (!CSVLoader.productList.Remove(CSVLoader.productList.Where(product => product.Id == id).FirstOrDefault()))
                 {
-                    throw new Exception(Message.ProductNotFound);
+                    HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.NotFound, Message.ProductNotFound);
+                    throw new HttpResponseException(response);
+                }
+                else
+                {
+                    return Ok();
                 }
             }
             catch (Exception ex)
