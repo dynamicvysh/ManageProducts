@@ -44,7 +44,7 @@ namespace ManageProductsTest
 
                 var responseValue = string.Empty;
 
-                if (response.StatusCode != HttpStatusCode.OK && response.StatusCode != HttpStatusCode.NoContent)
+                if (!(response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Created))
                 {
                     var message = String.Format("API Failed: Received status is HTTP {0}", response.StatusCode);
                     throw new Exception(message);

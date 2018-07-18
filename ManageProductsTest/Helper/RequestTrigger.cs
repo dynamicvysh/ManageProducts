@@ -29,9 +29,9 @@ namespace ManageProductsTest.Helper
         /// <param name="actualStatusCode"></param>
         public void CheckStatus(int actualStatusCode)
         {
-            if (!(actualStatusCode == 200 || actualStatusCode == 204))
+            if (!(actualStatusCode != 200 || actualStatusCode != 201))
             {
-                throw new Exception("Status code is not 200 OK");
+                throw new Exception("Status is not successful.");
             }
         }
     }
