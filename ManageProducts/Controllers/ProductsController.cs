@@ -19,8 +19,6 @@ namespace ManageProducts.Controllers
     {
         /// <summary>
         /// Returns list of all products which meets the search criteria if its met.
-        /// Returns an exception with proper message if products are not found.
-        /// Returns exception for any other generic exceptions
         /// </summary>
         /// <param name="filterOptions"></param>
         /// <returns></returns>
@@ -66,8 +64,6 @@ namespace ManageProducts.Controllers
 
         /// <summary>
         /// Returns the product whose id is same as the id passed
-        /// Returns exception with proper message if product is not found
-        /// Returns exception for any other exceptions
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
